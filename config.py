@@ -24,29 +24,31 @@ class Config():
 
     num_fbanks = 64
 
-    save_root = "./output_yamnet_augment"
+    save_root = "./output_nlp_team_model"
     background_folder = "/home/nuttawac/wakeword_batch1/background_for_augment"
 
     gpu_name = 0
 
     dataset = [
-        # {
-        #     "ds_root": "/home/nuttawac/lab_dataset/thai_ser/data/preprocess/wav_file",
-        #     "train_df": "/home/nuttawac/lab_dataset/thai_ser/annotation/person_level/train.csv",
-        #     "valid_df": "/home/nuttawac/lab_dataset/thai_ser/annotation/person_level/valid.csv",
-        #     "test_df": "/home/nuttawac/lab_dataset/thai_ser/annotation/person_level/valid.csv"
-        # }
         {
-            "ds_root": "/home/nuttawac/lab_dataset/commonvoice11/data/clips_wav",
-            "train_df": "/home/nuttawac/beam/commonvoice11/train.csv",
-            "valid_df": "/home/nuttawac/beam/commonvoice11/dev.csv",
-            "test_df": "/home/nuttawac/beam/commonvoice11/test.csv"
-        }
+            "ds_root": "/home/nuttawac/lab_dataset/thai_ser/data/preprocess/wav_file",
+            "train_df": "/home/nuttawac/lab_dataset/thai_ser/annotation/person_level/train.csv",
+            "valid_df": "/home/nuttawac/lab_dataset/thai_ser/annotation/person_level/valid.csv",
+            "test_df": "/home/nuttawac/lab_dataset/thai_ser/annotation/person_level/test.csv"
+        },
+        # {
+        #     "ds_root": "/home/nuttawac/lab_dataset/commonvoice11/data/clips_wav",
+        #     "train_df": "/home/nuttawac/beam/commonvoice11/train.csv",
+        #     "valid_df": "/home/nuttawac/beam/commonvoice11/dev.csv",
+        #     "test_df": "/home/nuttawac/beam/commonvoice11/test.csv"
+        # }
     ]
 
     model = {
-        "model_path": "/home/nuttawac/nlp-gender-classification/output_yamnet_augment/model_w",
-        "model_name": "09-0.21",
+        "model_path": "/home/nuttawac/nlp-gender-classification/input_model",
+        "model_name": "nlp_team_model",
+        # "model_path": "/home/nuttawac/nlp-gender-classification/output_yamnet_cv11_thaiser_tf/model_w",
+        # "model_name": "03-0.39",
         "load_weights": True,
         "class_name": ["Male", "Female"],
         "train_topn_layer": False
@@ -54,7 +56,7 @@ class Config():
 
     hyperparameters = {
         "optimizer": Adam(learning_rate=1e-4),
-        "metrics": [CategoricalAccuracy(), AUC()],
+        "metrics": ["accuracy"],
         "loss": CategoricalCrossentropy(from_logits=False),
         "batch_size": 32,
         "n_epoch": 20

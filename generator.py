@@ -45,11 +45,13 @@ class TFDataset():
             tmp_df = self._read_preproc_df(df_path, data_obj["ds_root"])
             dfs.append(tmp_df)
         
-        return pd.concat(dfs, ignore_index=True)
+        df = pd.concat(dfs, ignore_index=True)
+        df = df.sample(frac=1, random_state=self.config.seed).reset_index(drop=True)
+        
+        return df
         
     def _read_preproc_df(self, df_path, ds_root):
         df = pd.read_csv(df_path)
-        df = df.sample(frac=1, random_state=self.config.seed).reset_index(drop=True)
         df["File Name"] = df["File Name"].apply(lambda x: os.path.join(ds_root, x))
 
         return df
@@ -69,8 +71,10 @@ class TFDataset():
                                                     Tout=[tf.float32, tf.float32]
                                                     ), 
                             num_parallel_calls=self.config.dataloader_num_parallel)
-        
-        dataset = dataset.batch(self.config.hyperparameters["batch_size"]).map(self._fixup_shape)
+        # if self.mode == "train":
+        dataset = dataset.batch(self.config.hyperparameters["batch_size"], drop_remainder=False).map(self._fixup_shape)
+        # else: # valid, test mode set batch_size to 1
+        #     dataset = dataset.batch(1).map(self._fixup_shape)
         dataset = dataset.prefetch(self.config.dataloader_num_parallel)
         if self.mode != "test":
             dataset = dataset.repeat()
